@@ -1,0 +1,46 @@
+<% layout("/layouts/boilerplate.ejs") %>
+
+<div class="row">
+  <h1 class="p-0">Note #id</h1>
+</div>
+<div class="row">
+  <textarea
+    class="form-control bg-warning-subtle border-0 my-2"
+    rows="6"
+    name=""
+    id=""
+    disabled
+  >
+Note Content Here</textarea
+  >
+</div>
+<div class="row">
+  <p class="col-12 bg-info-subtle rounded-2 p-2">
+    This note is destroyed. If needed, copy the contents of the note before
+    leaving this page.
+  </p>
+</div>
+<div class="row mt-4">
+  <div class="p-0">
+    <button class="btn btn-primary btn-dark me-4">Select Text</button>
+    <button class="btn btn-primary add-btn">Create New Note</button>
+  </div>
+</div>
+
+<br /><br /><br /><br />
+
+<div class="row">
+  <h1>Note destroyed</h1>
+  <p class="text-secondary">The note with id # has been read and destroyed.</p>
+  <p>
+    If you haven't read the note, then someone else has. If you forgot to copy
+    it, ask the sender to recreate the note and send it again.
+  </p>
+</div>
+
+<br /><br /><br /><br />
+
+<div class="row">
+  <h1>Note not found</h1>
+  <p>The note with id # was not found.</p>
+</div>

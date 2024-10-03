@@ -1,0 +1,23 @@
+<% layout("/layouts/boilerplate.ejs") %>
+
+<div class="row mb-4">
+  <h1>Read and Destroy?</h1>
+  <p class="text-secondary">
+    You're about to open the note with id , after which it will be destroyed
+    automatically.
+  </p>
+</div>
+<form action="">
+  <div class="row mb-4">
+    <p>This note is encrypted. Enter the password to read it.</p>
+    <div class="col-6">
+      <input type="password" class="form-control mx-2" />
+    </div>
+  </div>
+  <div class="row">
+    <div>
+      <button class="btn btn-primary add-btn me-4">Yes, open the Note</button>
+      <button class="btn btn-primary btn-dark">Not Now</button>
+    </div>
+  </div>
+</form>

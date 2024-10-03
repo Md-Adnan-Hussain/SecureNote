@@ -1,0 +1,53 @@
+<% layout("/layouts/boilerplate.ejs") %>
+
+<div class="row">
+  <h1 class="p-0">Create a New Note</h1>
+</div>
+<form action="">
+  <div class="row">
+    <textarea
+      class="form-control bg-warning-subtle border-0 my-2"
+      rows="6"
+      name=""
+      id=""
+    ></textarea>
+  </div>
+  <div id="options">
+    <div class="row my-3">
+      <div class="col-6">
+        <label for="exampleInputEmail1" class="form-label"
+          >Note self-destructs</label
+        >
+        <select class="form-select" aria-label="Default select example">
+          <option selected value="0">after reading it</option>
+          <option value="1">1 hour from now</option>
+          <option value="2">24 hours from now</option>
+          <option value="3">7 days from now</option>
+          <option value="4">30 days from now</option>
+        </select>
+      </div>
+      <div class="col-6">
+        <label for="email" class="form-label"
+          >E-mail to send destruction notification.</label
+        >
+        <input type="email" class="form-control" id="email" />
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-6">
+        <label for="password1" class="form-label">Set password for note</label>
+        <input type="password" class="form-control" id="password1" />
+      </div>
+      <div class="col-6">
+        <label for="password2" class="form-label">Re-enter the password</label>
+        <input type="password" class="form-control" id="password2" />
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="mt-4 p-0">
+      <button class="btn btn-primary add-btn me-4">Create Note</button>
+      <button class="btn btn-primary btn-dark">Show Options</button>
+    </div>
+  </div>
+</form>

@@ -2,12 +2,18 @@ require("dotenv").config();
 
 const express = require("express");
 const app = express();
-const bodyParser = require("body-parser");
-const MongoStore = require("connect-mongo");
-const session = require("express-session");
-const cors = require("cors");
 const mongoose = require("mongoose");
-const notesRouter = require("./routes/noteRouter.js");
+const path = require("path");
+const methodOverride = require("method-override");
+const ejsMate = require("ejs-mate");
+const session = require("express-session");
+const MongoStore = require("connect-mongo");
+const flash = require("connect-flash");
+const bodyParser = require("body-parser");
+const cors = require("cors");
+
+const apisRouter = require("./routes/apisRouter.js");
+const pagesRouter = require("./routes/pagesRouter.js");
 
 const mongodbStore = MongoStore.create({
   mongoUrl: process.env.ATLAS_URL,
@@ -45,16 +51,35 @@ main()
     console.log(err);
   });
 
+app.set("view engine", "ejs");
+app.set("views", path.join(__dirname, "views"));
+
+app.use(express.static(path.join(__dirname, "public")));
 app.use(express.urlencoded({ extended: true }));
+app.use(methodOverride("_method"));
+app.use(session(sessionOptions));
+app.use(flash());
 app.use(bodyParser.json());
 app.use(cors());
-app.use(session(sessionOptions));
 
-app.get("/", (req, res) => {
-  res.send("App is working");
+app.engine("ejs", ejsMate);
+
+app.use((req, res, next) => {
+  res.locals.success = req.flash("success");
+  res.locals.error = req.flash("error");
+  res.locals.update = req.flash("update");
+  res.locals.deleted = req.flash("deleted");
+  res.locals.currUser = req.user;
+  res.locals.appName = process.env.APP_NAME;
+  next();
 });
 
-app.use("/api/notes", notesRouter);
+app.use("/", pagesRouter);
+app.use("/api/notes", apisRouter);
+
+app.all("*", (req, res) => {
+  res.status(404).render("notes/404.ejs");
+});
 
 app.listen(process.env.PORT, () => {
   console.log(`Server is listening to http://localhost:${process.env.PORT} \n`);
