@@ -45,8 +45,3 @@ module.exports.getNote = async (req, res) => {
     });
   }
 };
-
-// let url = "http://localhost:8080/api/notes/adnan";
-// let rs = await fetch(url);
-// rs = await rs.json();
-// res.render("notes/home.ejs", { message: rs.content });

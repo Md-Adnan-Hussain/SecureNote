@@ -5,23 +5,21 @@ const noteSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  accessed: {
-    type: Boolean,
-    default: false,
-  },
   pass: {
     type: String,
     required: true,
   },
   expiry: {
     type: Date,
-    required: true,
+    index: { expires: 0 },
   },
   email: {
     type: String,
     default: null,
   },
 });
+
+noteSchema.index({ expiry: 1 }, { expireAfterSeconds: 0 });
 
 const Note = mongoose.model("Note", noteSchema);
 

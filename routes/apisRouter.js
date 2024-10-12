@@ -1,15 +1,16 @@
 const express = require("express");
 const router = express.Router();
+const wrapAsync = require("../utils/wrapAsync.js");
 
 const apisController = require("../controllers/apisController.js");
 
-router.post("/", apisController.createNote);
+router.post("/", wrapAsync(apisController.createNote));
 
-router.post("/notify", apisController.notifyNote);
+router.post("/notify", wrapAsync(apisController.notifyNote));
 
 router
   .route("/:id")
-  .get(apisController.getNote)
-  .delete(apisController.deleteNote);
+  .get(wrapAsync(apisController.getNote))
+  .delete(wrapAsync(apisController.deleteNote));
 
 module.exports = router;
