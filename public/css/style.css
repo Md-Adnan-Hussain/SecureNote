@@ -46,7 +46,6 @@ body {
   font-weight: bold;
 }
 
-/* Add Listing */
 .add-btn {
   background-color: #ff2433;
   border: none;
@@ -64,8 +63,6 @@ body {
   background-color: #fb0d1d !important;
   box-shadow: 0 0 1rem #b0000c;
 }
-
-/* Edit Listing */
 
 .btn-dark {
   transition: 0.2s ease-in;
