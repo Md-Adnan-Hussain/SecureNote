@@ -1,8 +1,20 @@
 let Note = require("../models/notes.js");
 let NotesList = require("../models/notesList.js");
 let nodemailer = require("nodemailer");
+const CryptoJS = require("crypto-js");
 
-async function notifyUser(note) {
+const ENCRYPTION_KEY = process.env.ENCRYPTION_KEY || "your-32-character-key";
+
+const encrypt = (text) => {
+  return CryptoJS.AES.encrypt(text, ENCRYPTION_KEY).toString();
+};
+
+const decrypt = (ciphertext) => {
+  const bytes = CryptoJS.AES.decrypt(ciphertext, ENCRYPTION_KEY);
+  return bytes.toString(CryptoJS.enc.Utf8);
+};
+
+let notifyUser = async (note) => {
   if (!note.email) return null;
 
   const transporter = nodemailer.createTransport({
@@ -20,21 +32,34 @@ async function notifyUser(note) {
     text: `The following note has been accessed:\n\n${note.content}`,
   };
 
-  await transporter.sendMail(mailOptions);
-
-  return `Mail has been sent to ${note.email}`;
-}
+  try {
+    await transporter.sendMail(mailOptions);
+    return `Mail has been sent to ${note.email}`;
+  } catch (error) {
+    console.error("Error sending email:", error);
+    return `Failed to send mail to ${note.email}`;
+  }
+};
 
 module.exports.createNote = async (req, res) => {
   try {
     let { content, expire, email, pass } = req.body;
 
-    console.log(content, expire, email, pass);
+    const expireMapping = {
+      1: 60 * 60,
+      2: 60 * 60 * 24,
+      3: 60 * 60 * 24 * 7,
+      4: 60 * 60 * 24 * 30,
+    };
 
-    const expiryDate = expire ? new Date(Date.now() + expire * 1000) : null;
+    const expireSeconds = expireMapping[expire] || 60 * 60 * 24 * 365;
+
+    const expiryDate = new Date(Date.now() + expireSeconds * 1000);
+
+    const encryptedContent = encrypt(content);
 
     const newNote = new Note({
-      content,
+      content: encryptedContent,
       pass: pass || null,
       expiry: expiryDate,
       email: email || null,
@@ -42,7 +67,7 @@ module.exports.createNote = async (req, res) => {
 
     await newNote.save();
 
-    const notesList = await NotesList.findOne();
+    let notesList = await NotesList.findOne();
     if (notesList) {
       notesList.noteIds.push(newNote._id);
       await notesList.save();
@@ -53,17 +78,15 @@ module.exports.createNote = async (req, res) => {
       await newNotesList.save();
     }
 
-    return res.status(201).json({
-      noteId: newNote._id,
-      url: `SampleUrl/${newNote._id}`,
-      success: true,
-    });
+    notesList = await NotesList.find({});
+
+    console.log(newNote, "\n", notesList);
+
+    req.session.newNote = { id: newNote._id, pass: pass };
+    res.redirect("/link");
   } catch (error) {
-    console.log(error);
-    return res.status(500).json({
-      success: false,
-      error: error.message,
-    });
+    console.error(error);
+    res.status(500).render("notes/error.ejs", { message: error.message });
   }
 };
 
@@ -75,7 +98,7 @@ module.exports.getNote = async (req, res) => {
 
     const note = await Note.findById(id);
     if (note) {
-      const noteContent = note.content;
+      const noteContent = decrypt(note.content);
 
       let notificationMessage = null;
       if (note.email) {
@@ -105,9 +128,6 @@ module.exports.getNote = async (req, res) => {
     });
   } catch (error) {
     console.log(error);
-    return res.status(500).json({
-      success: false,
-      error: error.message,
-    });
+    res.status(500).render("notes/error.ejs", { message: error.message });
   }
 };

@@ -3,22 +3,18 @@ module.exports.createNote = async (req, res) => {
     res.render("notes/home.ejs", { message: "Hello" });
   } catch (error) {
     console.log(error);
-    return res.status(500).json({
-      success: false,
-      error: error,
-    });
+    res.status(500).render("notes/error.ejs", { message: error.message });
   }
 };
 
 module.exports.linkNote = async (req, res) => {
   try {
-    res.render("notes/link.ejs", { message: "Hello" });
+    const noteData = req.session.newNote;
+    delete req.session.newNote;
+    res.render("notes/link.ejs", { id: noteData.id, pass: noteData.pass });
   } catch (error) {
     console.log(error);
-    return res.status(500).json({
-      success: false,
-      error: error,
-    });
+    res.status(500).render("notes/error.ejs", { message: error.message });
   }
 };
 
@@ -27,10 +23,7 @@ module.exports.warning = async (req, res) => {
     res.render("notes/warning.ejs", { message: "Hello" });
   } catch (error) {
     console.log(error);
-    return res.status(500).json({
-      success: false,
-      error: error,
-    });
+    res.status(500).render("notes/error.ejs", { message: error.message });
   }
 };
 
@@ -39,9 +32,6 @@ module.exports.getNote = async (req, res) => {
     res.render("notes/note.ejs", { message: "Hello" });
   } catch (error) {
     console.log(error);
-    return res.status(500).json({
-      success: false,
-      error: error,
-    });
+    res.status(500).render("notes/error.ejs", { message: error.message });
   }
 };

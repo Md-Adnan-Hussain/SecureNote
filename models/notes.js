@@ -7,19 +7,16 @@ const noteSchema = new mongoose.Schema({
   },
   pass: {
     type: String,
-    required: true,
   },
   expiry: {
     type: Date,
-    index: { expires: 0 },
+    required: true,
+    index: { expires: "0s" },
   },
   email: {
     type: String,
-    default: null,
   },
 });
-
-noteSchema.index({ expiry: 1 }, { expireAfterSeconds: 0 });
 
 const Note = mongoose.model("Note", noteSchema);
 

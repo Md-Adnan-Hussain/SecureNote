@@ -69,8 +69,8 @@ app.use((req, res, next) => {
   res.locals.error = req.flash("error");
   res.locals.update = req.flash("update");
   res.locals.deleted = req.flash("deleted");
-  res.locals.currUser = req.user;
   res.locals.appName = process.env.APP_NAME;
+  res.locals.domain = `${process.env.HOST_URL}:${process.env.PORT}`;
   next();
 });
 
@@ -81,6 +81,14 @@ app.all("*", (req, res) => {
   res.status(404).render("notes/404.ejs");
 });
 
+app.use((err, req, res, next) => {
+  console.log(err);
+  let { statusCode = 500, message = "Something went wrong" } = err;
+  res.status(statusCode).render("notes/error.ejs", { message });
+});
+
 app.listen(process.env.PORT, () => {
-  console.log(`Server is listening to http://localhost:${process.env.PORT} \n`);
+  console.log(
+    `Server is listening to ${process.env.HOST_URL}:${process.env.PORT} \n`
+  );
 });

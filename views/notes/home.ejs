@@ -1,24 +1,71 @@
 <% layout("/layouts/boilerplate.ejs") %>
 
-<div class="row">
-  <h1 class="p-0">Create a New Note</h1>
-</div>
-<form action="">
-  <div class="row">
+<title>SecureNote : New Note</title>
+
+<!-- Form without options -->
+<form
+  id="noteFormBasic"
+  action="/api/notes"
+  method="POST"
+  class="needs-validation"
+  novalidate
+>
+  <div class="row gx-0">
+    <h1 class="p-0">Create a New Note</h1>
+  </div>
+  <div class="row gx-0">
     <textarea
       class="form-control bg-warning-subtle border-0 my-2"
       rows="6"
-      name=""
-      id=""
+      name="content"
+      id="noteContent"
+      placeholder="Write your note here..."
+      required
+    ></textarea>
+  </div>
+  <div class="row gx-0">
+    <div class="mt-4 p-0">
+      <button
+        type="button"
+        class="btn btn-primary add-btn me-4"
+        id="createNoteBasic"
+      >
+        Create Note
+      </button>
+      <button type="button" class="btn btn-primary btn-dark" id="toggleOptions">
+        Show Options
+      </button>
+    </div>
+  </div>
+</form>
+
+<!-- Form with options -->
+<form
+  id="noteFormAdvanced"
+  action="/api/notes"
+  method="POST"
+  class="needs-validation"
+  novalidate
+  style="display: none"
+>
+  <div class="row gx-0">
+    <h1 class="p-0">Create a New Note</h1>
+  </div>
+  <div class="row gx-0">
+    <textarea
+      class="form-control bg-warning-subtle border-0 my-2"
+      rows="6"
+      name="content"
+      id="noteContentAdvanced"
+      placeholder="Write your note here..."
+      required
     ></textarea>
   </div>
   <div id="options">
-    <div class="row my-3">
-      <div class="col-6">
-        <label for="exampleInputEmail1" class="form-label"
-          >Note self-destructs</label
-        >
-        <select class="form-select" aria-label="Default select example">
+    <div class="row">
+      <div class="col-12 col-md-6 my-2">
+        <label for="expire" class="form-label">Note self-destructs</label>
+        <select class="form-select" id="expire" name="expire" required>
           <option selected value="0">after reading it</option>
           <option value="1">1 hour from now</option>
           <option value="2">24 hours from now</option>
@@ -26,28 +73,96 @@
           <option value="4">30 days from now</option>
         </select>
       </div>
-      <div class="col-6">
+      <div class="col-12 col-md-6 my-2">
         <label for="email" class="form-label"
           >E-mail to send destruction notification.</label
         >
-        <input type="email" class="form-control" id="email" />
+        <input type="email" class="form-control" id="email" name="email" />
       </div>
     </div>
     <div class="row">
-      <div class="col-6">
+      <div class="col-12 col-md-6 my-2">
         <label for="password1" class="form-label">Set password for note</label>
-        <input type="password" class="form-control" id="password1" />
+        <input
+          type="password"
+          class="form-control"
+          id="password1"
+          name="pass"
+        />
       </div>
-      <div class="col-6">
+      <div class="col-12 col-md-6 my-2">
         <label for="password2" class="form-label">Re-enter the password</label>
         <input type="password" class="form-control" id="password2" />
       </div>
     </div>
   </div>
-  <div class="row">
+  <div class="row gx-0">
     <div class="mt-4 p-0">
-      <button class="btn btn-primary add-btn me-4">Create Note</button>
-      <button class="btn btn-primary btn-dark">Show Options</button>
+      <button
+        type="button"
+        class="btn btn-primary add-btn me-4"
+        id="createNoteAdvanced"
+      >
+        Create Note
+      </button>
+      <button
+        type="button"
+        class="btn btn-primary btn-dark"
+        id="toggleOptionsAdvanced"
+      >
+        Hide Options
+      </button>
     </div>
   </div>
 </form>
+
+<script>
+  document
+    .getElementById("toggleOptions")
+    .addEventListener("click", function () {
+      const basicForm = document.getElementById("noteFormBasic");
+      const advancedForm = document.getElementById("noteFormAdvanced");
+
+      basicForm.style.display = "none";
+      advancedForm.style.display = "block";
+    });
+
+  document
+    .getElementById("toggleOptionsAdvanced")
+    .addEventListener("click", function () {
+      const basicForm = document.getElementById("noteFormBasic");
+      const advancedForm = document.getElementById("noteFormAdvanced");
+
+      advancedForm.style.display = "none";
+      basicForm.style.display = "block";
+    });
+
+  document
+    .getElementById("createNoteBasic")
+    .addEventListener("click", function () {
+      const form = document.getElementById("noteFormBasic");
+      if (form.checkValidity()) {
+        form.submit();
+      } else {
+        form.classList.add("was-validated");
+      }
+    });
+
+  document
+    .getElementById("createNoteAdvanced")
+    .addEventListener("click", function () {
+      const form = document.getElementById("noteFormAdvanced");
+      const password1 = document.getElementById("password1").value;
+      const password2 = document.getElementById("password2").value;
+
+      if (form.checkValidity()) {
+        if (password1 === password2) {
+          form.submit();
+        } else {
+          alert("Passwords do not match! Please try again.");
+        }
+      } else {
+        form.classList.add("was-validated");
+      }
+    });
+</script>
