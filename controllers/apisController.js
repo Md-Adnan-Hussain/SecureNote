@@ -18,6 +18,11 @@ const decrypt = (CipherText) => {
 let notifyUser = async (note) => {
   if (!note.email) return null;
 
+  if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
+    console.error("Email configuration is missing.");
+    return "Email configuration is missing.";
+  }
+
   const transporter = nodemailer.createTransport({
     service: "gmail",
     auth: {
@@ -30,15 +35,18 @@ let notifyUser = async (note) => {
     from: process.env.EMAIL_USER,
     to: note.email,
     subject: "Your Note Has Been Accessed",
-    text: `The note with id #${note._id} has been accessed.`,
+    text: `The note with id #${note._id} has been accessed & destroyed.`,
   };
 
   try {
     await transporter.sendMail(mailOptions);
-    return `Mail has been sent to ${note.email}`;
+    return [
+      true,
+      `${note.email} has been notified that the note has been opened.`,
+    ];
   } catch (error) {
-    console.error("Error sending email:", error);
-    return `Failed to send mail to ${note.email}`;
+    console.error("Error sending email:", error.message);
+    return [false, `Failed to send mail to ${note.email}`];
   }
 };
 
@@ -140,11 +148,16 @@ module.exports.getNote = async (req, res) => {
     const noteContent = decrypt(note.content);
     console.log(noteContent);
 
-    // let notificationMessage = null;
-    // if (note.email) {
-    //   notificationMessage = await notifyUser(note);
-    //   console.log(notificationMessage);
-    // }
+    let emailStatus = null;
+    if (note.email) {
+      emailStatus = await notifyUser(note);
+      console.log(emailStatus);
+      if (emailStatus[0]) {
+        req.flash("success", emailStatus[1]);
+      } else {
+        req.flash("error", emailStatus[1]);
+      }
+    }
 
     await Note.deleteOne({ _id: id });
 

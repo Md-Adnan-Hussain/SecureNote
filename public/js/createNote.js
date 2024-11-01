@@ -1,6 +1,9 @@
 document.getElementById("toggleOptions").addEventListener("click", function () {
   const basicForm = document.getElementById("noteForm");
   const advancedForm = document.getElementById("noteFormAdvanced");
+  const basicContent = document.getElementById("noteContent").value;
+
+  document.getElementById("noteContentAdvanced").value = basicContent;
 
   basicForm.style.display = "none";
   advancedForm.style.display = "block";
@@ -11,6 +14,11 @@ document
   .addEventListener("click", function () {
     const basicForm = document.getElementById("noteForm");
     const advancedForm = document.getElementById("noteFormAdvanced");
+    const advancedContent = document.getElementById(
+      "noteContentAdvanced"
+    ).value;
+
+    document.getElementById("noteContent").value = advancedContent;
 
     advancedForm.style.display = "none";
     basicForm.style.display = "block";

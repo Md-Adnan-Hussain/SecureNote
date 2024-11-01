@@ -66,7 +66,9 @@
       <div class="col-12 col-md-6 my-2">
         <label for="expire" class="form-label">Note self-destructs</label>
         <select class="form-select" id="expire" name="expire" required>
-          <option selected value="0">after reading it</option>
+          <option selected value="0">
+            After reading it or 1 year from now
+          </option>
           <option value="1">1 hour from now</option>
           <option value="2">24 hours from now</option>
           <option value="3">7 days from now</option>
@@ -78,6 +80,7 @@
           >E-mail to send destruction notification.</label
         >
         <input type="email" class="form-control" id="email" name="email" />
+        <div class="invalid-feedback">Please enter a valid email address.</div>
       </div>
     </div>
     <div class="row">

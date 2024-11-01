@@ -2,11 +2,11 @@
 
 <title>SecureNote : Note Created</title>
 
-<div class="row">
+<div class="row gx-0">
   <h1 class="ps-0">Your Secure Link is Ready</h1>
   <p class="ps-0 text-secondary">This note will be destroyed once read.</p>
 </div>
-<div class="row">
+<div class="row gx-0">
   <input
     id="linkInput"
     type="text"
@@ -16,8 +16,8 @@
   />
   <div class="ps-0 form-text">Copy this link before leaving this page.</div>
 </div>
-<div class="row mt-5 p-0 d-flex justify-content-between">
-  <span class="p-0 w-auto">
+<div class="row gx-0 mt-3 p-0 d-flex justify-content-between">
+  <span class="py-2 w-auto">
     <button class="btn btn-outline-secondary me-2" onclick="selectLink()">
       Copy Link
     </button>
@@ -25,38 +25,34 @@
       E-mail Link
     </button>
   </span>
-  <span class="p-0 w-auto">
+  <span class="py-2 w-auto">
     <a href="/id/<%= id %>" class="btn btn-warning">Destroy Note now</a>
   </span>
 </div>
-<br /><br /><br /><br />
 <% if(pass) { %>
-<div class="password-div">
-  <div class="row">
-    <h2 class="ps-0">Custom Password</h2>
-    <input
-      id="passwordInput"
-      type="password"
-      class="form-control bg-warning-subtle"
-      value="<%= pass %>"
-      disabled
-    />
-    <div class="ps-0 form-text">
-      Copy this password before leaving this page.
-    </div>
-  </div>
-  <div class="row mt-3 p-0 d-flex justify-content-between">
-    <span class="p-0 w-auto">
-      <button
-        id="togglePassword"
-        class="btn btn-outline-secondary me-2"
-        onclick="togglePassword()"
-      >
-        Show Password
-      </button>
-    </span>
-  </div>
+<div class="row gx-0 mt-5 p-0">
+  <h2 class="ps-0">Custom Password</h2>
+  <input
+    id="passwordInput"
+    type="password"
+    class="form-control bg-warning-subtle"
+    value="<%= pass %>"
+    disabled
+  />
+  <div class="ps-0 form-text">Copy this password before leaving this page.</div>
 </div>
+<div class="row gx-0 mt-3 p-0 d-flex justify-content-between">
+  <span class="p-0 w-auto">
+    <button
+      id="togglePassword"
+      class="btn btn-outline-secondary me-2"
+      onclick="togglePassword()"
+    >
+      Show Password
+    </button>
+  </span>
+</div>
+
 <% } %>
 
 <script src="/js/linkNote.js"></script>

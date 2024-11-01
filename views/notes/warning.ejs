@@ -4,11 +4,11 @@
 
 <% if(exists) {%> <% if(!destroyed) {%>
 
-<div class="row mb-4">
+<div class="row gx-0 mb-4">
   <h1>Read and Destroy?</h1>
-  <p class="text-secondary">
-    You're about to open the note with id , after which it will be destroyed
-    automatically.
+  <p class="text-secondary text-break">
+    You're about to open the note with id #<%= id %>, after which it will be
+    destroyed automatically.
   </p>
 </div>
 
@@ -20,15 +20,15 @@
 >
   <% if(protected) {%>
 
-  <div class="row mb-4">
+  <div class="row gx-0 mb-4">
     <p>This note is encrypted. Enter the password to read it.</p>
-    <div class="col-6">
-      <input name="pass" type="password" class="form-control mx-2" required />
+    <div class="col-12 col-md-6">
+      <input name="pass" type="password" class="form-control" required />
     </div>
   </div>
 
   <% } %>
-  <div class="row">
+  <div class="row gx-0">
     <div>
       <button type="submit" class="btn btn-primary add-btn me-4">
         Yes, open the Note
@@ -44,7 +44,7 @@
 
 <% } } else { %>
 
-<div class="row">
+<div class="row gx-0">
   <h1>Note not found</h1>
   <p>
     The note with id <i><u> #<%= id %></u></i> was not found.
@@ -53,7 +53,7 @@
 
 <% } %> <% if(exists && destroyed) {%>
 
-<div class="row">
+<div class="row gx-0">
   <h1>Note destroyed</h1>
   <p class="text-secondary">
     The note with id <i><u> #<%= id %></u></i> has been read and destroyed.
