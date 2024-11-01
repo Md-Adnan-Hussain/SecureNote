@@ -8,8 +8,8 @@ router.get("/", wrapAsync(pagesController.createNote));
 
 router.get("/link", wrapAsync(pagesController.linkNote));
 
-router.get("/warning", wrapAsync(pagesController.warning));
-
 router.get("/id/:id", wrapAsync(pagesController.getNote));
+
+router.get("/note", wrapAsync(pagesController.showNote));
 
 module.exports = router;

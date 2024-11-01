@@ -6,11 +6,6 @@ const apisController = require("../controllers/apisController.js");
 
 router.post("/", wrapAsync(apisController.createNote));
 
-router.post("/notify", wrapAsync(apisController.notifyNote));
-
-router
-  .route("/:id")
-  .get(wrapAsync(apisController.getNote))
-  .delete(wrapAsync(apisController.deleteNote));
+router.post("/:id", wrapAsync(apisController.getNote));
 
 module.exports = router;

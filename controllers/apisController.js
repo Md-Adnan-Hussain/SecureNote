@@ -2,15 +2,16 @@ let Note = require("../models/notes.js");
 let NotesList = require("../models/notesList.js");
 let nodemailer = require("nodemailer");
 const CryptoJS = require("crypto-js");
+const bcrypt = require("bcrypt");
 
-const ENCRYPTION_KEY = process.env.ENCRYPTION_KEY || "your-32-character-key";
+const ENCRYPTION_KEY = process.env.ENCRYPTION_KEY || "SecureNote";
 
 const encrypt = (text) => {
   return CryptoJS.AES.encrypt(text, ENCRYPTION_KEY).toString();
 };
 
-const decrypt = (ciphertext) => {
-  const bytes = CryptoJS.AES.decrypt(ciphertext, ENCRYPTION_KEY);
+const decrypt = (CipherText) => {
+  const bytes = CryptoJS.AES.decrypt(CipherText, ENCRYPTION_KEY);
   return bytes.toString(CryptoJS.enc.Utf8);
 };
 
@@ -29,7 +30,7 @@ let notifyUser = async (note) => {
     from: process.env.EMAIL_USER,
     to: note.email,
     subject: "Your Note Has Been Accessed",
-    text: `The following note has been accessed:\n\n${note.content}`,
+    text: `The note with id #${note._id} has been accessed.`,
   };
 
   try {
@@ -58,9 +59,11 @@ module.exports.createNote = async (req, res) => {
 
     const encryptedContent = encrypt(content);
 
+    const hashedPass = pass ? await bcrypt.hash(pass, 10) : null;
+
     const newNote = new Note({
       content: encryptedContent,
-      pass: pass || null,
+      pass: hashedPass,
       expiry: expiryDate,
       email: email || null,
     });
@@ -93,39 +96,60 @@ module.exports.createNote = async (req, res) => {
 module.exports.getNote = async (req, res) => {
   try {
     const id = req.params.id;
-
     console.log(id);
 
     const note = await Note.findById(id);
-    if (note) {
-      const noteContent = decrypt(note.content);
+    console.log(note);
 
-      let notificationMessage = null;
-      if (note.email) {
-        notificationMessage = await notifyUser(note);
+    if (!note) {
+      const notesList = await NotesList.findOne({ noteIds: id });
+      if (notesList) {
+        console.log("Note has been deleted");
+        req.flash("deleted", "Note has been deleted");
+        res.redirect(`/`);
+        return;
+      } else {
+        console.log("No such note exists");
+        req.flash("error", "No such note exists");
+        res.redirect(`/`);
+        return;
+      }
+    }
+
+    if (note.pass != null) {
+      const { pass } = req.body;
+      console.log("pass", pass);
+
+      if (!pass) {
+        console.log("Password needed to access this note.");
+        req.flash("error", "Password needed to access this note.");
+        res.redirect(`/id/${id}`);
+        return;
       }
 
-      await Note.deleteOne({ _id: id });
-
-      return res.status(200).json({
-        content: noteContent,
-        success: true,
-        notification: notificationMessage,
-      });
+      if (pass && !(await bcrypt.compare(pass, note.pass))) {
+        console.log("Password does not match. Please try again!");
+        req.flash("error", "Password does not match. Please try again!");
+        res.redirect(`/id/${id}`);
+        return;
+      } else {
+        console.log("Password matched successfully!!!");
+      }
     }
 
-    const notesList = await NotesList.findOne();
-    if (notesList && notesList.noteIds.includes(id)) {
-      return res.status(200).json({
-        message: "Note has been accessed already and deleted.",
-        success: true,
-      });
-    }
+    const noteContent = decrypt(note.content);
+    console.log(noteContent);
 
-    return res.status(404).json({
-      message: "No such note created.",
-      success: false,
-    });
+    // let notificationMessage = null;
+    // if (note.email) {
+    //   notificationMessage = await notifyUser(note);
+    //   console.log(notificationMessage);
+    // }
+
+    await Note.deleteOne({ _id: id });
+
+    req.session.noteContent = { id: note._id, content: noteContent };
+    res.redirect(`/note`);
   } catch (error) {
     console.log(error);
     res.status(500).render("notes/error.ejs", { message: error.message });

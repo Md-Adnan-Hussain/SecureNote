@@ -3,7 +3,7 @@
 <title>SecureNote : Note</title>
 
 <div class="row">
-  <h1 class="p-0">Note #id</h1>
+  <h1 class="p-0">Note #<%= id %></h1>
 </div>
 <div class="row">
   <textarea
@@ -13,7 +13,7 @@
     id=""
     disabled
   >
-Note Content Here</textarea
+<%= content %></textarea
   >
 </div>
 <div class="row">
@@ -25,24 +25,6 @@ Note Content Here</textarea
 <div class="row mt-4">
   <div class="p-0">
     <button class="btn btn-primary btn-dark me-4">Select Text</button>
-    <button class="btn btn-primary add-btn">Create New Note</button>
+    <a href="/" class="btn btn-primary add-btn">Create New Note</a>
   </div>
-</div>
-
-<br /><br /><br /><br />
-
-<div class="row">
-  <h1>Note destroyed</h1>
-  <p class="text-secondary">The note with id # has been read and destroyed.</p>
-  <p>
-    If you haven't read the note, then someone else has. If you forgot to copy
-    it, ask the sender to recreate the note and send it again.
-  </p>
-</div>
-
-<br /><br /><br /><br />
-
-<div class="row">
-  <h1>Note not found</h1>
-  <p>The note with id # was not found.</p>
 </div>

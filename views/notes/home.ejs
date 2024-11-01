@@ -4,7 +4,7 @@
 
 <!-- Form without options -->
 <form
-  id="noteFormBasic"
+  id="noteForm"
   action="/api/notes"
   method="POST"
   class="needs-validation"
@@ -28,7 +28,7 @@
       <button
         type="button"
         class="btn btn-primary add-btn me-4"
-        id="createNoteBasic"
+        id="createNoteBtn"
       >
         Create Note
       </button>
@@ -116,53 +116,4 @@
   </div>
 </form>
 
-<script>
-  document
-    .getElementById("toggleOptions")
-    .addEventListener("click", function () {
-      const basicForm = document.getElementById("noteFormBasic");
-      const advancedForm = document.getElementById("noteFormAdvanced");
-
-      basicForm.style.display = "none";
-      advancedForm.style.display = "block";
-    });
-
-  document
-    .getElementById("toggleOptionsAdvanced")
-    .addEventListener("click", function () {
-      const basicForm = document.getElementById("noteFormBasic");
-      const advancedForm = document.getElementById("noteFormAdvanced");
-
-      advancedForm.style.display = "none";
-      basicForm.style.display = "block";
-    });
-
-  document
-    .getElementById("createNoteBasic")
-    .addEventListener("click", function () {
-      const form = document.getElementById("noteFormBasic");
-      if (form.checkValidity()) {
-        form.submit();
-      } else {
-        form.classList.add("was-validated");
-      }
-    });
-
-  document
-    .getElementById("createNoteAdvanced")
-    .addEventListener("click", function () {
-      const form = document.getElementById("noteFormAdvanced");
-      const password1 = document.getElementById("password1").value;
-      const password2 = document.getElementById("password2").value;
-
-      if (form.checkValidity()) {
-        if (password1 === password2) {
-          form.submit();
-        } else {
-          alert("Passwords do not match! Please try again.");
-        }
-      } else {
-        form.classList.add("was-validated");
-      }
-    });
-</script>
+<script src="/js/createNote.js"></script>
