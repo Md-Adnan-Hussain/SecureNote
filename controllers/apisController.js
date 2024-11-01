@@ -19,7 +19,7 @@ let notifyUser = async (note) => {
   if (!note.email) return null;
 
   if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
-    console.error("Email configuration is missing.");
+    console.log("Email configuration is missing.");
     return "Email configuration is missing.";
   }
 
@@ -45,7 +45,7 @@ let notifyUser = async (note) => {
       `${note.email} has been notified that the note has been opened.`,
     ];
   } catch (error) {
-    console.error("Error sending email:", error.message);
+    console.log("Error sending email:", error.message);
     return [false, `Failed to send mail to ${note.email}`];
   }
 };
@@ -91,12 +91,10 @@ module.exports.createNote = async (req, res) => {
 
     notesList = await NotesList.find({});
 
-    console.log(newNote, "\n", notesList);
-
     req.session.newNote = { id: newNote._id, pass: pass };
     res.redirect("/link");
   } catch (error) {
-    console.error(error);
+    console.log(error);
     res.status(500).render("notes/error.ejs", { message: error.message });
   }
 };
@@ -104,10 +102,8 @@ module.exports.createNote = async (req, res) => {
 module.exports.getNote = async (req, res) => {
   try {
     const id = req.params.id;
-    console.log(id);
 
     const note = await Note.findById(id);
-    console.log(note);
 
     if (!note) {
       const notesList = await NotesList.findOne({ noteIds: id });
@@ -126,7 +122,6 @@ module.exports.getNote = async (req, res) => {
 
     if (note.pass != null) {
       const { pass } = req.body;
-      console.log("pass", pass);
 
       if (!pass) {
         console.log("Password needed to access this note.");
@@ -146,7 +141,6 @@ module.exports.getNote = async (req, res) => {
     }
 
     const noteContent = decrypt(note.content);
-    console.log(noteContent);
 
     let emailStatus = null;
     if (note.email) {
