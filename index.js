@@ -79,7 +79,7 @@ app.use((req, res, next) => {
   res.locals.deleted = req.flash("deleted");
   res.locals.appName = process.env.APP_NAME;
   res.locals.currUser = req.user;
-  res.locals.domain = `${process.env.HOST_URL}:${process.env.PORT}`;
+  res.locals.domain = `${process.env.HOST_URL}`;
   next();
 });
 
