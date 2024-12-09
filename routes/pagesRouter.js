@@ -3,10 +3,11 @@ const router = express.Router();
 
 const pagesController = require("../controllers/pagesController.js");
 const wrapAsync = require("../utils/wrapAsync.js");
+const { isLoggedIn } = require("../middlewares/middleware.js");
 
-router.get("/", wrapAsync(pagesController.createNote));
+router.get("/", isLoggedIn, wrapAsync(pagesController.createNote));
 
-router.get("/link", wrapAsync(pagesController.linkNote));
+router.get("/link", isLoggedIn, wrapAsync(pagesController.linkNote));
 
 router.get("/id/:id", wrapAsync(pagesController.getNote));
 

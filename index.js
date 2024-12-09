@@ -11,9 +11,13 @@ const MongoStore = require("connect-mongo");
 const flash = require("connect-flash");
 const bodyParser = require("body-parser");
 const cors = require("cors");
+const passport = require("passport");
+const LocalStrategy = require("passport-local");
 
 const apisRouter = require("./routes/apisRouter.js");
 const pagesRouter = require("./routes/pagesRouter.js");
+const userRouter = require("./routes/userRouter.js");
+const User = require("./models/user.js");
 
 const mongodbStore = MongoStore.create({
   mongoUrl: process.env.ATLAS_URL,
@@ -61,20 +65,26 @@ app.use(session(sessionOptions));
 app.use(flash());
 app.use(bodyParser.json());
 app.use(cors());
+app.use(passport.initialize());
+app.use(passport.session());
 
 app.engine("ejs", ejsMate);
+passport.use(new LocalStrategy(User.authenticate()));
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
 
 app.use((req, res, next) => {
   res.locals.success = req.flash("success");
   res.locals.error = req.flash("error");
-  res.locals.update = req.flash("update");
   res.locals.deleted = req.flash("deleted");
   res.locals.appName = process.env.APP_NAME;
+  res.locals.currUser = req.user;
   res.locals.domain = `${process.env.HOST_URL}:${process.env.PORT}`;
   next();
 });
 
 app.use("/", pagesRouter);
+app.use("/auth", userRouter);
 app.use("/api/notes", apisRouter);
 
 app.all("*", (req, res) => {
